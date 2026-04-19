@@ -1,0 +1,36 @@
+{
+  "name": "zelda-contribution-graph",
+  "version": "1.0.0",
+  "description": "Turn your GitHub contribution graph into a classic 8-bit Zelda (NES) adventure. Link collects rupees, hearts and cuts bushes across your contribution grid while Octoroks, Moblins, Leevers and Keese patrol.",
+  "main": "dist/index.js",
+  "bin": {
+    "zelda-contribution-graph": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/cli.js",
+    "dev": "ts-node src/cli.ts",
+    "generate": "node dist/cli.js"
+  },
+  "keywords": [
+    "github",
+    "contribution-graph",
+    "zelda",
+    "link",
+    "nes",
+    "svg",
+    "readme",
+    "profile"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/node-fetch": "^2.6.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.0"
+  }
+}

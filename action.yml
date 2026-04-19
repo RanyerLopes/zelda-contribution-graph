@@ -1,0 +1,66 @@
+name: "Zelda Contribution Graph"
+description: "Generate an 8-bit NES Zelda animated SVG from your GitHub contribution graph"
+author: "Zelda Contribution Graph"
+branding:
+  icon: "award"
+  color: "green"
+
+inputs:
+  github_user_name:
+    description: "GitHub username to generate the graph for"
+    required: true
+  github_token:
+    description: "GitHub token with read:user scope. Defaults to the workflow's GITHUB_TOKEN."
+    required: false
+    default: ${{ github.token }}
+  outputs:
+    description: "Space-separated list of output files to generate."
+    required: false
+    default: "dist/zelda-contribution-graph.svg dist/zelda-contribution-graph-light.svg"
+  theme:
+    description: "Single-theme mode (dark|light). Ignored if outputs specifies both."
+    required: false
+    default: "dark"
+  duration:
+    description: "Total animation duration in seconds"
+    required: false
+    default: "90"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: "20"
+
+    - name: Install dependencies
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: npm ci --production=false
+
+    - name: Build
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: npm run build
+
+    - name: Generate SVGs
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+      run: |
+        mkdir -p dist
+        for output in ${{ inputs.outputs }}; do
+          theme="${{ inputs.theme }}"
+          case "$output" in
+            *-light.svg) theme="light" ;;
+            *-dark.svg) theme="dark" ;;
+          esac
+          node ${{ github.action_path }}/dist/cli.js \
+            --username "${{ inputs.github_user_name }}" \
+            --token "$GITHUB_TOKEN" \
+            --output "$output" \
+            --theme "$theme" \
+            --duration "${{ inputs.duration }}"
+        done
